@@ -30,11 +30,13 @@ No *inserir_no(No *atual, int valor){
     return atual;
 }
 
-void imprimir(No *atual){
+void imprimir(No *atual, int nivel){
     if(atual != NULL){
-        imprimir(atual->dir);
+        imprimir(atual->dir, nivel+1);
+        int i;
+        for(i = 0; i <= nivel; i++)printf("\t");
         printf("%d\n", atual->valor);
-        imprimir(atual->esq);
+        imprimir(atual->esq, nivel+1);
     }
 }
 
@@ -43,6 +45,11 @@ int buscar(No *atual, int valor){
     if(valor == atual->valor) return 1;
     if(valor < atual->valor) return buscar(atual->esq, valor);
     return buscar(atual->dir, valor);
+}
+
+No *encotrar_menor_no(No *atual){
+    while (atual->esq != NULL) atual = atual->esq;
+    return atual;
 }
 
 No *remover_no(No *atual, int valor){
@@ -62,24 +69,29 @@ No *remover_no(No *atual, int valor){
             No *aux = atual->esq;
             free(atual);
             return aux;
+        }else{
+            No *aux = encotrar_menor_no(atual->dir);
+            atual->valor = aux->valor;
+            atual->dir = remover_no(atual->dir, aux->valor);
         }
-        
-        
     }
-    
+    return atual;    
 }
 int main(){
     No *raiz = criar_arvore();
     raiz = inserir_no(raiz, 10);
     raiz = inserir_no(raiz, 20);
-    raiz = inserir_no(raiz, 5);
+    raiz = inserir_no(raiz, 25);
     raiz = inserir_no(raiz, 30);
+    raiz = inserir_no(raiz, 35);
     raiz = inserir_no(raiz, 40);
-    raiz = inserir_no(raiz, 2);
-    raiz = inserir_no(raiz, 7);
-    raiz = inserir_no(raiz, 6);
+    raiz = inserir_no(raiz, 45);
+    raiz = inserir_no(raiz, 50);
 
-    imprimir(raiz);
-    printf("\n%d ", buscar(raiz, 5));
+    imprimir(raiz, 0);
+    //printf("\n%d ", buscar(raiz, 5));
+    //printf("\n");
+    //raiz = remover_no(raiz, 5);
+    //imprimir(raiz, 0);
     return 0;
 }
